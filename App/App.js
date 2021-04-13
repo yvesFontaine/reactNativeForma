@@ -1,23 +1,39 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import Auth from './components/Auth/Auth';
+import Main from './components/Main/Main';
+import SplashScreen from './components/SplashScreen/SplashScreen';
 
-export default function App() {
-  const size = 60;
-  return (
-    <View>
-      <Text style={styles.red}>Allez le Bayern</Text>
-      <Text style={{...styles.red,...styles.underline,fontSize:size+2}}>Allez le Bayern</Text>
-     </View>
-  );
-}
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-const styles = StyleSheet.create({
-  red:{
-    color: 'red',
-    fontSize:35,
-    fontWeight:'bold'
-  },
-  underline:{
-    textDecorationLine:'underline'
+    this.state = {
+      window:<SplashScreen onFinishSplash={
+        ()=>{
+          this.onFinishSplash()
+        }
+      }
+      />,
+      login:undefined
+    };
   }
-});
+
+  onFinishSplash(){
+    this.setState({window:<Auth onConnect={
+         ()=>{this.onAuthSuccess()}
+    }/>})
+  }
+
+  onAuthSuccess(login){
+      this.setState({window: <Main/>, login: login})
+  }
+
+  render() {
+    return (
+      <View>
+        {this.state.window}
+      </View>
+    );
+  }
+}
